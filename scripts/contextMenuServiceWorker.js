@@ -58,23 +58,21 @@ const generateCompletionAction = async (info) => {
 
     const { selectionText } = info;
     const basePromptPrefix = `
-    Write me a detailed step-by-step recipe by a professional chef for something healthy I can make with the ONLY the ingredients I have available:
-
-    Recipe:
-      `;
+    I want you to act as a code explainer. Your task is to take a code sample, break it down into simpler parts, and explain each step in detail. Describe what each step does and why, and any concepts that need to be understood. Make sure to explain the problem in a way that can be understood by people with varying levels of coding expertise.
+    `;
 
       const baseCompletion = await generate(
         `${basePromptPrefix}${selectionText}`
       );
       
       const secondPrompt = `
-        Take the ingredient list and recipe below and generate a blog post written in thwe style of Jamie Oliver. Make it feel like a story.
+      Format the explainer to me in three parts. Part One: The first part explain to me as if I am 5. Part Two: The second part into an easy to understand answer format of a minimum 500 words. Reference the code sample when answering. Part Three: Explain the Code to me line by line.
         
-        Ingredients: ${selectionText}
+        Code: ${selectionText}
         
-        Recipe: ${baseCompletion.text}
+        Explainer: ${baseCompletion.text}
         
-        Blog Post:
+        Easy to Understand Format:
 		  `;
       
       const secondPromptCompletion = await generate(secondPrompt);
@@ -92,7 +90,7 @@ const generateCompletionAction = async (info) => {
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
       id: 'context-run',
-      title: 'Generate recipe',
+      title: 'Explain This Code',
       contexts: ['selection'],
     });
   });
